@@ -35,19 +35,29 @@ Choose one of the following methods to clone the workshop repository.
 1. [ ] Open a terminal or command prompt
 1. [ ] Run the following commands:
 
-```bash
-git clone https://github.com/seiggy/agent-unit-testing.git
-cd agent-unit-testing
-```
+    ```bash
+    git clone https://github.com/seiggy/agent-unit-testing.git
+    cd agent-unit-testing
+    ```
+
+1. [ ] Login to Azure CLI: `az login`
+- Username: ++@lab.CloudPortalCredential(User1).Username++
+- Password: ++@lab.CloudPortalCredential(User1).Password++
+- AccessToken: ++@lab.CloudPortalCredential(User1).AccessToken++
 
 ### Option B: Using Visual Studio Code
 
 1. [ ] Open VS Code
+1. [ ] Click the `Connect` button on the Get Started page to login with your credentials:
+    - Username: ++@lab.CloudPortalCredential(User1).Username++
+    - Password: ++@lab.CloudPortalCredential(User1).Password++
+    - AccessToken: ++@lab.CloudPortalCredential(User1).AccessToken++
 1. [ ] Press ++Ctrl+Shift+P++ (or ++Cmd+Shift+P++ on macOS) to open the Command Palette
 1. [ ] Type **Git: Clone** and select it
 1. [ ] Paste the repository URL: ++https://github.com/seiggy/agent-unit-testing++
 1. [ ] Choose a local folder to clone into
 1. [ ] When prompted, click **Open** to open the cloned repository
+
 
 ### Option C: Using Visual Studio 2026
 
