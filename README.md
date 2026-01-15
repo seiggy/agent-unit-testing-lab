@@ -189,6 +189,8 @@ cd src/AgentEvalsWorkshop.AppHost
 >
 > [Azure AI Foundry Setup](https://learn.microsoft.com/en-us/azure/ai-studio/quickstarts/get-started-playground)
 
+1. [ ] Once Everything is **Healthy**, stop your AppHost before continuing. The unit tests will start the app host for you as needed. If you get "port in use errors", you likely still have the AppHost running in the background.
+
 ## Verify Your Setup
 
 Run a quick smoke test to ensure everything is configured correctly.
@@ -265,7 +267,7 @@ The **TaskAdherenceEvaluator** measures how well an AI agent follows instruction
 
 ## Create the Test Class
 
-1. [ ] Create a new file **WeatherAssistantAgentTests.cs** in the **tests/AgentEvalsWorkshop.Tests/** project.
+1. [ ] Open the file **WeatherAssistantAgentTests.cs** in the **tests/AgentEvalsWorkshop.Tests/** project.
 
 1. [ ] Add the necessary **using** directives for the ++AgentEvalsWorkshop.Agents++ namespace, test helpers, and the ++Microsoft.Extensions.AI.Evaluation++ packages (including `Quality`, `Reporting`, and `Reporting.Storage` namespaces)
 1. [ ] Define a test class decorated with ++[TestClass]++ that inherits from ++BaseIntegrationTest++
@@ -463,14 +465,6 @@ public async Task DoesPersonalAgentRetrieveWeather()
     dotnet test tests/AgentEvalsWorkshop.Tests --filter "FullyQualifiedName~WeatherAssistantAgentTests"
     ```
 
-    @[Click this to run the unit tests][Run Unit Tests]{Powershell}
-
-[Run Unit Tests]:
-```Powershell
-cd c:\github\agent-unit-testing
-dotnet test tests/AgentEvalsWorkshop.Tests --filter "FullyQualifiedName~WeatherAssistantAgentTests"
-```
-
 > [+hint] 📚 **Documentation Links:**
 >
 > [dotnet test](https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-test-vstest)
@@ -481,17 +475,8 @@ dotnet test tests/AgentEvalsWorkshop.Tests --filter "FullyQualifiedName~WeatherA
 1. [ ] Run the following command from the root of your repository to generate a consolidated report:
 
     ```Powershell
-    cd c:\github\agent-unit-testing
     dotnet aieval report -p C:\TestReports -o test-report.html
     ```
-
-    @[Click this to run the test report][AIEval Report]{Powershell}
-
-[AIEval Report]:
-```Powershell
-cd c:\github\agent-unit-testing
-dotnet aieval report -p C:\TestReports -o test-report.html
-```
 
 3. [ ] Open `test-report.html` in your browser to view the detailed evaluation results
 
@@ -538,6 +523,7 @@ A passing test indicates:
 | `ChatConfiguration` throws | Missing or invalid connection string | Verify Azure Foundry credentials in user secrets or environment variables |
 | Low task adherence scores | Agent instructions don't align with task | Review the system prompt in `US1Agent.cs`; ensure tool definitions are correctly exposed |
 | Report directory empty | Write permission denied | Verify your user has write access to the `storageRootPath` directory |
+| AIEval tool Doesn't run | Missing tools | Run `dotnet tool restore` in the root of the repository to install the tool. |
 
 ---
 
@@ -670,49 +656,9 @@ This exercise combines several built-in evaluators to assess AI response quality
 
 ---
 
-## Create the Test File
+## Open the Test File
 
-1. [ ] Create a new file **AgentRetrievalEvalTests.cs** in the **tests/AgentEvalsWorkshop.Tests/** project
-
-1. [ ] Add the necessary **using** directives:
-   - `AgentEvalsWorkshop.Agents` for the agent
-   - `AgentEvalsWorkshop.Tests.Helpers` for test helpers
-   - `Microsoft.Agents.AI` for the AI agent framework
-   - `Microsoft.Extensions.AI` for chat client interfaces
-   - `Microsoft.Extensions.AI.Evaluation` and sub-namespaces for evaluators
-   - Add `ChatRole = Microsoft.Extensions.AI.ChatRole` alias to avoid ambiguity
-
-1. [ ] Add the pragma directive `#pragma warning disable AIEVAL001` at the top to suppress preview API warnings
-
-1. [ ] Define a test class decorated with `[TestClass]` that inherits from `BaseIntegrationTest`
-
-<details>
-<summary>💡 Show Class Setup</summary>
-
-```csharp
-#pragma warning disable AIEVAL001
-using AgentEvalsWorkshop.Agents;
-using AgentEvalsWorkshop.Tests.Helpers;
-using Microsoft.Agents.AI;
-using Microsoft.Extensions.AI;
-using Microsoft.Extensions.AI.Evaluation;
-using Microsoft.Extensions.AI.Evaluation.Quality;
-using Microsoft.Extensions.AI.Evaluation.Reporting;
-using Microsoft.Extensions.AI.Evaluation.Reporting.Storage;
-using ChatRole = Microsoft.Extensions.AI.ChatRole;
-
-namespace AgentEvalsWorkshop.Tests;
-
-[TestClass]
-public class AgentRetrievalEvalTests : BaseIntegrationTest
-{
-    private static ReportingConfiguration? s_defaultReportingConfiguration;
-    
-    // Methods will be added in subsequent steps
-}
-```
-
-</details>
+1. [ ] Open the file **AgentRetrievalEvalTests.cs** in the **tests/AgentEvalsWorkshop.Tests/** project
 
 ## Add the Reporting Configuration
 
@@ -970,14 +916,6 @@ public async Task KnowledgebaseChatAgent_EvaluateQuestionAnswer_Scores(int quest
 	dotnet test tests/AgentEvalsWorkshop.Tests --filter "FullyQualifiedName~AgentRetrievalEvalTests"
 	```
 
-	@[Click this to run the unit tests][Run Unit Tests]{Powershell}
-
-[Run Unit Tests]:
-```Powershell
-cd d:\github\seiggy\agent-unit-testing
-dotnet test tests/AgentEvalsWorkshop.Tests --filter "FullyQualifiedName~AgentRetrievalEvalTests"
-```
-
 ## Generate and View the Evaluation Report
 
 1. [ ] After the tests complete, use the `aieval` CLI tool to generate an HTML report:
@@ -985,14 +923,6 @@ dotnet test tests/AgentEvalsWorkshop.Tests --filter "FullyQualifiedName~AgentRet
 	```Powershell
 	dotnet aieval report -p C:\TestReports -o retrieval-eval-report.html
 	```
-
-	@[Click this to run the test report][AIEval Report]{Powershell}
-
-[AIEval Report]:
-```Powershell
-cd d:\github\seiggy\agent-unit-testing
-dotnet aieval report -p C:\TestReports -o retrieval-eval-report.html
-```
 
 2. [ ] Open `retrieval-eval-report.html` in your browser to view the detailed evaluation results
 
@@ -1073,11 +1003,9 @@ Custom evaluators allow you to define domain-specific evaluation criteria that g
 
 ---
 
-## Create the Evaluator File
+## Open the Answer Scoring Evaluator File
 
-1. [ ] Create a new file **AnswerScoringEvaluator.cs** in the **tests/AgentEvalsWorkshop.Tests/Helpers/** folder
-
-1. [ ] Add the necessary **using** directives and place the class in the `Microsoft.Extensions.AI.Evaluation.Quality` namespace
+1. [ ] Open the file **AnswerScoringEvaluator.cs** in the **tests/AgentEvalsWorkshop.Tests/Helpers/** folder
 
 > [!knowledge] Why this namespace?
 > 
@@ -1092,37 +1020,6 @@ Custom evaluators allow you to define domain-specific evaluation criteria that g
 // --------------------------------------------------------------------------------------------
 
 namespace Microsoft.Extensions.AI.Evaluation.Quality;
-```
-
-</details>
-
-## Define the Evaluator Class
-
-1. [ ] Create a `public sealed class` named `AnswerScoringEvaluator` that implements `IEvaluator`
-1. [ ] Define a private constant string `MetricName` with value `"Answer Score"`
-1. [ ] Create a public constant `AnswerScoreMetricName` that exposes the metric name
-1. [ ] Implement the `EvaluationMetricNames` property that returns a collection containing your metric name
-
-> [!knowledge] IEvaluator Interface
-> 
-> The `IEvaluator` interface requires:
-> - `EvaluationMetricNames`: Declares which metrics this evaluator produces
-> - `EvaluateAsync()`: The main evaluation logic
-
-<details>
-<summary>💡 Show Class Structure</summary>
-
-```csharp
-public sealed class AnswerScoringEvaluator : IEvaluator
-{
-    private const string MetricName = "Answer Score";
-
-    public const string AnswerScoreMetricName = MetricName;
-
-    public IReadOnlyCollection<string> EvaluationMetricNames => [MetricName];
-
-    // EvaluateAsync will be added next
-}
 ```
 
 </details>
@@ -1183,7 +1080,7 @@ public async ValueTask<EvaluationResult> EvaluateAsync(
     ArgumentNullException.ThrowIfNull(modelResponse);
     ArgumentNullException.ThrowIfNull(chatConfiguration);
 
-    var numericMetric = new NumericMetric(MetricName);
+    var numericMetric = new NumericMetric(AnswerScoreMetricName);
     var result = new EvaluationResult(numericMetric);
 
     // Validation and evaluation logic will be added next...
@@ -1327,9 +1224,9 @@ return [new ChatMessage(ChatRole.User, prompt)];
 
 </details>
 
-## Add Response Record Types
+## Check Response Record Types
 
-1. [ ] Outside the `AnswerScoringEvaluator` class (but in the same file), add record types for structured output parsing:
+1. [ ] Outside the `AnswerScoringEvaluator` class (but in the same file), you should see the following records defined:
 
 ```csharp
 record ScoringResponse(AnswerScore[] Scores);
@@ -1455,11 +1352,11 @@ private static IEnumerable<IEvaluator> GetEvaluators()
 
 ## Update the EvaluateQuestion Method
 
-1. [ ] Add the `AnswerScoringEvaluator.Context` to the `additionalContext` array in `EvaluateAsync()`
+1. [ ] Add the `AnswerScoringEvaluator.Context` to the `additionalContext` array in `EvaluateQuestion()`
 1. [ ] Pass the expected answer from the `EvalQuestion` record
 
 <details>
-<summary>💡 Show Updated EvaluateAsync Call</summary>
+<summary>💡 Show Updated EvaluateQuestion Call</summary>
 
 ```csharp
 var result = await scenario.EvaluateAsync(
@@ -1523,14 +1420,6 @@ private static void Validate(EvaluationResult result)
 	dotnet test tests/AgentEvalsWorkshop.Tests --filter "FullyQualifiedName~AgentRetrievalEvalTests"
 	```
 
-	@[Click this to run the unit tests][Run Unit Tests]{Powershell}
-
-[Run Unit Tests]:
-```Powershell
-cd d:\github\seiggy\agent-unit-testing
-dotnet test tests/AgentEvalsWorkshop.Tests --filter "FullyQualifiedName~AgentRetrievalEvalTests"
-```
-
 ## Generate and View the Evaluation Report
 
 1. [ ] After the tests complete, generate an HTML report:
@@ -1538,14 +1427,6 @@ dotnet test tests/AgentEvalsWorkshop.Tests --filter "FullyQualifiedName~AgentRet
 	```Powershell
 	dotnet aieval report -p C:\TestReports -o custom-eval-report.html
 	```
-
-	@[Click this to run the test report][AIEval Report]{Powershell}
-
-[AIEval Report]:
-```Powershell
-cd d:\github\seiggy\agent-unit-testing
-dotnet aieval report -p C:\TestReports -o custom-eval-report.html
-```
 
 2. [ ] Open `custom-eval-report.html` in your browser
 
