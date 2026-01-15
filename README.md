@@ -142,11 +142,30 @@ cd src/AgentEvalsWorkshop.AppHost
 
 1. [ ] Set your Azure credentials using the following commands:
 
-```bash
-dotnet user-secrets set "Azure:SubscriptionId" "<your-subscription-id>"
-dotnet user-secrets set "Azure:ResourceGroup" "<your-resource-group>"
-dotnet user-secrets set "Azure:AIFoundry:Endpoint" "<your-foundry-endpoint>"
-```
+    ```bash
+    dotnet user-secrets set "Azure:TenantId" "@lab.CloudSubscription.TenantId"
+    dotnet user-secrets set "Azure:SubscriptionId" "@lab.CloudSubscription.Id"
+    dotnet user-secrets set "Azure:ResourceGroup" "@lab.CloudResourceGroup(ResourceGroup1).Name"
+    dotnet user-secrets set "Parameters:az-foundry-name" "@lab.CloudResourceTemplate(Lab182-Template).Outputs[name]"
+    dotnet user-secrets set "Parameters:gpt-deployment-name" "chat"
+    dotnet user-secrets set "Parameters:resource-group" "@lab.CloudResourceGroup(ResourceGroup1).Name"
+    ```
+
+    Or, copy the following file to your `secrets.json` in Visual Studio 2026:
+
+    ```json
+    {
+        "Azure:TenantId": "@lab.CloudSubscription.TenantId",
+        "Azure:SubscriptionId": "@lab.CloudSubscription.Id",
+        "Azure:ResourceGroup": "@lab.CloudResourceGroup(ResourceGroup1).Name",
+        "Azure:Location": "@lab.CloudResourceGroup(ResourceGroup1).Location",
+        "Azure:AllowResourceGroupCreation": false,
+        "Parameters:gpt-deployment-name": "chat",
+        "Parameters:az-foundry-name": "@lab.CloudResourceTemplate(Lab182-Template).Outputs[name]",
+        "Parameters:resource-group": "@lab.CloudResourceGroup(ResourceGroup1).Name"
+    }
+    ```
+
 
 1. [ ] Restart the AppHost after configuring secrets
 
