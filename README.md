@@ -53,7 +53,7 @@ Choose one of the following methods to clone the workshop repository.
 1. [ ] Login to Azure CLI: `az login`
 - Username: ++@lab.CloudPortalCredential(User1).Username++
 - Password: ++@lab.CloudPortalCredential(User1).Password++
-- AccessToken: ++@lab.CloudPortalCredential(User1).AccessToken++
+- TAP: ++@lab.CloudPortalCredential(User1).AccessToken++
 
 ### Option B: Using Visual Studio Code
 
@@ -61,7 +61,7 @@ Choose one of the following methods to clone the workshop repository.
 1. [ ] Click the `Connect` button on the Get Started page to login with your credentials:
     - Username: ++@lab.CloudPortalCredential(User1).Username++
     - Password: ++@lab.CloudPortalCredential(User1).Password++
-    - AccessToken: ++@lab.CloudPortalCredential(User1).AccessToken++
+    - TAP: ++@lab.CloudPortalCredential(User1).AccessToken++
 1. [ ] Press ++Ctrl+Shift+P++ (or ++Cmd+Shift+P++ on macOS) to open the Command Palette
 1. [ ] Type **Git: Clone** and select it
 1. [ ] Paste the repository URL: ++https://github.com/seiggy/agent-unit-testing++
