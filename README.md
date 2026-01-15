@@ -125,7 +125,7 @@ When the Aspire Dashboard opens, you'll need to provide your Azure subscription 
 1. [ ] Use the following values to setup your resources:
     - Subscription Id:
     - Resource Group: ++@lab.CloudResourceGroup(ResourceGroup1).Name++
-    - Foundry Deployment Name: ++@lab.CloudResourceTemplate(Lab182-Template).Outputs[aiFoundryApiEndpoint]++
+    - Foundry Deployment Name: ++@lab.CloudResourceTemplate(Lab182-Template).Outputs[name]++
     - Model Deployment Name: ++chat++
 
 ### Alternative: Configure via User Secrets
