@@ -119,17 +119,14 @@ dotnet run --project src/AgentEvalsWorkshop.AppHost
 
 When the Aspire Dashboard opens, you'll need to provide your Azure subscription credentials to connect to Azure AI Foundry.
 
-### Locate Your Azure Subscription ID
-
-1. [ ] Navigate to the [Azure Portal](https://portal.azure.com)
-1. [ ] Go to **Subscriptions** in the left navigation or search bar
-1. [ ] Copy your **Subscription ID** from the list
-
 ### Input Credentials in Aspire Dashboard
 
-1. [ ] In the Aspire Dashboard, locate the ++chat++ resource
-1. [ ] Find the configuration prompt or parameters section
-1. [ ] Paste your **Subscription ID** into the appropriate field
+1. [ ] In the Aspire Dashboard, locate the ++set parameters++ button in the top-right corner.
+1. [ ] Use the following values to setup your resources:
+    - Subscription Id:
+    - Resource Group: ++@lab.CloudResourceGroup(ResourceGroup1).Name++
+    - Foundry Deployment Name: ++@lab.CloudResourceTemplate(Lab182-Template).Outputs[aiFoundryApiEndpoint]++
+    - Model Deployment Name: ++chat++
 
 ### Alternative: Configure via User Secrets
 
