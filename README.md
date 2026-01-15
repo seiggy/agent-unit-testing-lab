@@ -121,12 +121,18 @@ When the Aspire Dashboard opens, you'll need to provide your Azure subscription 
 
 ### Input Credentials in Aspire Dashboard
 
-1. [ ] In the Aspire Dashboard, locate the ++set parameters++ button in the top-right corner.
-1. [ ] Use the following values to setup your resources:
-    - Subscription Id:
+1. [ ] In the Aspire Dashboard, locate the ++set parameters++ buttons in the top-right corner.
+    ![Aspire Enter Values](./images/aspire-enter-values.png)
+1. [ ] Use the following values to setup your resources in both dialogs:
+    - Tenant Id: ++@lab.CloudSubscription.TenantId++
+    - Subscription Id: ++@lab.CloudSubscription.Id++
+    - Location: ++@lab.CloudResourceGroup(ResourceGroup1).Location++
     - Resource Group: ++@lab.CloudResourceGroup(ResourceGroup1).Name++
     - Foundry Deployment Name: ++@lab.CloudResourceTemplate(Lab182-Template).Outputs[name]++
     - Model Deployment Name: ++chat++
+
+    ![Aspire Parameters Dialog](./images/aspire-parameters-1.png)
+    ![Azure Provisioning Dialog](./images/aspire-parameters-2.png)
 
 ### Alternative: Configure via User Secrets
 
@@ -144,6 +150,7 @@ cd src/AgentEvalsWorkshop.AppHost
 
     ```bash
     dotnet user-secrets set "Azure:TenantId" "@lab.CloudSubscription.TenantId"
+    dotnet user-secrets set "Azure:Location" "@lab.CloudResourceGroup(ResourceGroup1).Location"
     dotnet user-secrets set "Azure:SubscriptionId" "@lab.CloudSubscription.Id"
     dotnet user-secrets set "Azure:ResourceGroup" "@lab.CloudResourceGroup(ResourceGroup1).Name"
     dotnet user-secrets set "Parameters:az-foundry-name" "@lab.CloudResourceTemplate(Lab182-Template).Outputs[name]"
