@@ -91,54 +91,51 @@ Choose one of the following methods to clone the workshop repository.
 > | ++AgentEvalsWorkshop.ServiceDefaults++ | Shared service configuration |
 > | ++AgentEvalsWorkshop.Tests++ | Integration tests with AI evaluators |
 
-## Start the Aspire AppHost
-
-The Aspire AppHost orchestrates the application and its dependencies, including the Azure AI Foundry connection.
+## Configure User Secrets
 
 ### Using Visual Studio 2026
 
-1. [ ] In **Solution Explorer**, right-click on ++AgentEvalsWorkshop.AppHost++
-1. [ ] Select **Set as Startup Project**
-1. [ ] Press ++F5++ or click the **Start** button to run
-1. [ ] The Aspire Dashboard will open in your default browser
+In the solution explorer panel on the right of the screen, expand the `src/` folder. Find the `AgentEvalsWorkshop.Apphost` project node, Right click on this node and select "Manage User Secrets" from the context menu:
 
-### Using Terminal / VS Code
+![Manage User Secrets](./images/vs-manage-user-secrets.png)
 
-1. [ ] Open a terminal in the repository root
-1. [ ] Run the following command:
+Paste the following values to your user secrets file and save it:
 
-```bash
-dotnet run --project src/AgentEvalsWorkshop.AppHost
+```json
+{
+    "Azure:TenantId": "@lab.CloudSubscription.TenantId",
+    "Azure:SubscriptionId": "@lab.CloudSubscription.Id",
+    "Azure:ResourceGroup": "@lab.CloudResourceGroup(ResourceGroup1).Name",
+    "Azure:Location": "@lab.CloudResourceGroup(ResourceGroup1).Location",
+    "Azure:AllowResourceGroupCreation": false,
+    "Parameters:gpt-deployment-name": "chat",
+    "Parameters:az-foundry-name": "@lab.CloudResourceTemplate(Lab182-Template).Outputs[name]",
+    "Parameters:resource-group": "@lab.CloudResourceGroup(ResourceGroup1).Name"
+}
 ```
 
-> [!knowledge] Dashboard URL
-> 
-> The terminal will display a URL for the Aspire Dashboard (typically ++https://localhost:17208++ or similar). Open this URL in your browser.
+### Using Visual Studio Code
 
-## Configure Azure AI Foundry Credentials
+In the explorer panel on the left of the screen, expand the `src/` folder and `AgentEvalsWorkshop.AppHost` folders. Find the `AgentEvalsWorkshop.Apphost.csproj` file. Right click on this file and select "Manage User Secrets" from the context menu:
 
-When the Aspire Dashboard opens, you'll need to provide your Azure subscription credentials to connect to Azure AI Foundry.
+![Manage User Secrets](./images/manage-user-secrets.png)
 
-### Input Credentials in Aspire Dashboard
+Paste the following values to your user secrets file and save it:
 
-1. [ ] In the Aspire Dashboard, locate the ++set parameters++ buttons in the top-right corner.
-    ![Aspire Enter Values](./images/aspire-enter-values.png)
-1. [ ] Use the following values to setup your resources in both dialogs:
-    - Tenant Id: ++@lab.CloudSubscription.TenantId++
-    - Subscription Id: ++@lab.CloudSubscription.Id++
-    - Location: ++@lab.CloudResourceGroup(ResourceGroup1).Location++
-    - Resource Group: ++@lab.CloudResourceGroup(ResourceGroup1).Name++
-    - Foundry Deployment Name: ++@lab.CloudResourceTemplate(Lab182-Template).Outputs[name]++
-    - Model Deployment Name: ++chat++
+```json
+{
+    "Azure:TenantId": "@lab.CloudSubscription.TenantId",
+    "Azure:SubscriptionId": "@lab.CloudSubscription.Id",
+    "Azure:ResourceGroup": "@lab.CloudResourceGroup(ResourceGroup1).Name",
+    "Azure:Location": "@lab.CloudResourceGroup(ResourceGroup1).Location",
+    "Azure:AllowResourceGroupCreation": false,
+    "Parameters:gpt-deployment-name": "chat",
+    "Parameters:az-foundry-name": "@lab.CloudResourceTemplate(Lab182-Template).Outputs[name]",
+    "Parameters:resource-group": "@lab.CloudResourceGroup(ResourceGroup1).Name"
+}
+```
 
-    ![Aspire Parameters Dialog](./images/aspire-parameters-1.png)
-    ![Azure Provisioning Dialog](./images/aspire-parameters-2.png)
-
-### Alternative: Configure via User Secrets
-
-> [!knowledge] User Secrets
-> 
-> If you prefer to configure credentials outside the dashboard, use .NET User Secrets for a more persistent configuration.
+### Using the Terminal
 
 1. [ ] Open a terminal and navigate to the AppHost project:
 
@@ -173,8 +170,38 @@ cd src/AgentEvalsWorkshop.AppHost
     }
     ```
 
+## Start the Aspire AppHost
 
-1. [ ] Restart the AppHost after configuring secrets
+The Aspire AppHost orchestrates the application and its dependencies, including the Azure AI Foundry connection.
+
+### Using Visual Studio 2026
+
+1. [ ] In **Solution Explorer**, right-click on ++AgentEvalsWorkshop.AppHost++
+1. [ ] Select **Set as Startup Project**
+1. [ ] Press ++F5++ or click the **Start** button to run (Click 'Yes' if a popup asks about trusting the certificate.)
+1. [ ] The Aspire Dashboard will open in your default browser
+
+### Using Terminal / VS Code
+
+1. [ ] Open a terminal in the repository root
+1. [ ] Run the following commands:
+
+    ```bash
+    dotnet dev-certs https --trust
+    dotnet run --project src/AgentEvalsWorkshop.AppHost
+    ```
+
+> [!hint]
+>
+> Make sure the developer certificate is trusted. When running the dotnet dev-certs command a window
+> Will pop up asking for confirmation to trust the certificate. You must accept this or Aspire
+> Will not function as expected. Visual Studio 2026 will ask when first run as well. If your browser
+> does not show the site is trusted, try closing the browser and restarting Aspire to refresh the
+> Certificate store.
+
+> [!knowledge] Dashboard URL
+> 
+> The terminal will display a URL for the Aspire Dashboard (typically ++https://localhost:17208++ or similar). Open this URL in your browser.
 
 ### Verify Connection
 
