@@ -502,6 +502,7 @@ public async Task DoesPersonalAgentRetrieveWeather()
 1. [ ] Run the following command from the root of your repository to generate a consolidated report:
 
     ```Powershell
+    dotnet tool restore
     dotnet aieval report -p C:\TestReports -o test-report.html
     ```
 
