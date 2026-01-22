@@ -226,7 +226,7 @@ Run a quick smoke test to ensure everything is configured correctly.
 1. [ ] Run the configuration smoke test:
 
 ```bash
-dotnet test tests/AgentEvalsWorkshop.Tests --filter "FullyQualifiedName~ConfigurationSmokeTests"
+dotnet test --project tests/AgentEvalsWorkshop.Tests --filter "FullyQualifiedName~ConfigurationSmokeTests"
 ```
 
 1. [ ] Verify the test passes
@@ -489,7 +489,7 @@ public async Task DoesPersonalAgentRetrieveWeather()
 1. [ ] Execute the test using the `dotnet test` CLI with a filter for your test class, or use Visual Studio Test Explorer
 
     ```Powershell
-    dotnet test tests/AgentEvalsWorkshop.Tests --filter "FullyQualifiedName~WeatherAssistantAgentTests"
+    dotnet test --project tests/AgentEvalsWorkshop.Tests --filter "FullyQualifiedName~WeatherAssistantAgentTests"
     ```
 
 > [+hint] 📚 **Documentation Links:**
@@ -940,7 +940,7 @@ public async Task KnowledgebaseChatAgent_EvaluateQuestionAnswer_Scores(int quest
 1. [ ] Execute the test using the `dotnet test` CLI with a filter for your test class:
 
 	```Powershell
-	dotnet test tests/AgentEvalsWorkshop.Tests --filter "FullyQualifiedName~AgentRetrievalEvalTests"
+	dotnet test --project tests/AgentEvalsWorkshop.Tests --filter "FullyQualifiedName~AgentRetrievalEvalTests"
 	```
 
 ## Generate and View the Evaluation Report
@@ -1444,7 +1444,7 @@ private static void Validate(EvaluationResult result)
 1. [ ] Execute the test using the `dotnet test` CLI:
 
 	```Powershell
-	dotnet test tests/AgentEvalsWorkshop.Tests --filter "FullyQualifiedName~AgentRetrievalEvalTests"
+	dotnet test --project tests/AgentEvalsWorkshop.Tests --filter "FullyQualifiedName~AgentRetrievalEvalTests"
 	```
 
 ## Generate and View the Evaluation Report
@@ -1620,7 +1620,7 @@ public static string GameRules => """
 1. [ ] Run the tests with the minimal prompt:
 
 	```Powershell
-	dotnet test tests/AgentEvalsWorkshop.Tests --filter "TestCategory=AgentValidation"
+	dotnet test --project tests/AgentEvalsWorkshop.Tests --filter "TestCategory=AgentValidation"
 	```
 
 2. [ ] **Expected Result**: Some or all Tests will **fail** because the agent lacks proper instructions
@@ -2408,7 +2408,7 @@ Now use your `PromptImprovementGenerator` to iteratively improve the prompt!
 1. [ ] Run the improvement test:
 
 	```Powershell
-	dotnet test tests/AgentEvalsWorkshop.Tests --filter "ImproveInstructions" --logger "console;verbosity=detailed"
+	dotnet test --project tests/AgentEvalsWorkshop.Tests --filter "ImproveInstructions" --logger "console;verbosity=detailed"
 	```
 
 2. [ ] Review the output which includes:
@@ -2432,7 +2432,7 @@ private const string startingInstructions = """
 1. [ ] Run the validation tests:
 
 	```Powershell
-	dotnet test tests/AgentEvalsWorkshop.Tests --filter "TestCategory=AgentValidation"
+	dotnet test --project tests/AgentEvalsWorkshop.Tests --filter "TestCategory=AgentValidation"
 	```
 
 2. [ ] Check the results:
