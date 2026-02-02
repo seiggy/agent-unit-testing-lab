@@ -526,6 +526,38 @@ public async Task DoesPersonalAgentRetrieveWeather()
 - **Conversation Panel**: Collapsible section showing token counts and the full message exchange
 - **Diagnostic Data Table**: Cache status, latency, model provider details, and token breakdown for each evaluation call
 
+## Fixing the failure
+At this point, your unit test more than likely failed. The likely culprit is the TaskAdheranceEvaluator will expect that your agent intelligently uses the data available to answer the user's question. We can fix this by updating our agent instructions to better align with what the task evaluator wants.
+
+1. [ ] Go to the `src/AgentEvalsWorkshop/Agents/US1Agent.cs` file.
+1. [ ] In the Instructions, add a line after the base instruction block to tell the agent to provide a 5-day forecast, since the tool will always provide it to the agent, when the user asks for the weather:
+
+    <details>
+    <summary>💡 Show example implementation</summary>
+    ```csharp
+    public static AIAgent BuildUS1Agent(IChatClient chatClient)
+    {
+        return chatClient
+            .AsAIAgent(
+            instructions: """
+                You are a personal assistant for a user based in the United States.
+                When providing information, always use the imperial measurement system (inches, feet, miles,
+                pounds, Fahrenheit, etc.) unless explicitly instructed otherwise.
+                Ensure that your responses are tailored to the cultural context of the United States.
+                Your goal is to assist the user effectively while adhering to these guidelines.
+
+                If ther user asks for the weather, provide both today's weather and a 5-day forecast.
+                """,
+                name: "Assistant",
+                tools: GetToolDefinitions()
+            );
+    }
+    ```
+    </details>
+
+1. [ ] Rerun your unit tests, re-generate your report, and ensure your agent passes!
+
+
 📚 **Documentation Links:**
 - [aieval report tool](https://learn.microsoft.com/en-us/dotnet/ai/evaluation/evaluate-with-reporting#generate-a-report)
 - [Interpreting Evaluation Reports](https://learn.microsoft.com/en-us/dotnet/ai/evaluation/libraries#interpret-results)
@@ -647,6 +679,68 @@ public class WeatherAssistantAgentTests : BaseIntegrationTest
 ```
 
 </details>
+
+<details>
+<summary>📄 Show Complete US1Agent.cs</summary>
+```csharp
+using Microsoft.Agents.AI;
+using Microsoft.Extensions.AI;
+using System.ComponentModel;
+
+namespace AgentEvalsWorkshop.Agents;
+
+
+public class US1Agent
+{
+    private static readonly string[] Summaries =
+    [
+        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+    ];
+
+    public static AIAgent BuildUS1Agent(IChatClient chatClient)
+    {
+        return chatClient
+            .AsAIAgent(
+            instructions: """
+                You are a personal assistant for a user based in the United States.
+                When providing information, always use the imperial measurement system (inches, feet, miles,
+                pounds, Fahrenheit, etc.) unless explicitly instructed otherwise.
+                Ensure that your responses are tailored to the cultural context of the United States.
+                Your goal is to assist the user effectively while adhering to these guidelines.
+
+                If ther user asks for the weather, provide both today's weather and a 5-day forecast.
+                """,
+                name: "Assistant",
+                tools: GetToolDefinitions()
+            );
+    }
+
+    public static AITool[] GetToolDefinitions()
+    {
+        return [AIFunctionFactory.Create(GetWeatherForecast)];
+    }
+
+
+    [Description("Get a weather forecast that the agent can use for user reference")]
+    private static WeatherForecast[]? GetWeatherForecast()
+    {
+        var forecast = Enumerable.Range(1, 5).Select(index =>
+        new WeatherForecast
+        (
+            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+            Random.Shared.Next(-20, 55),
+            Summaries[Random.Shared.Next(Summaries.Length)]
+        ))
+        .ToArray();
+        return forecast;
+    }
+}
+
+record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+{
+    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+}
+```
 
 ===
 
@@ -964,16 +1058,19 @@ public async Task KnowledgebaseChatAgent_EvaluateQuestionAnswer_Scores(int quest
 📚 **Documentation Links:**
 - [aieval report tool](https://learn.microsoft.com/en-us/dotnet/ai/evaluation/evaluate-with-reporting#generate-a-report)
 
+
+## Understanding failures and **why** it's difficult to get these tests to fully pass
+
+This agent uses a very crude RAG solution. Dumping the entire CSV file into the context instead of using a more appropriate vectorized service. As this is an example, and we're simply wanting to examine how to create and manage these types of tests, it's ok if you can't get all tests to pass here. The goal is to understand how the failure report can help you understand the shortcomings of your agent's solution. This unit test collection obviously points out that our RAG pattern is insufficient for our desired goals! So this is where we would go back and engineer a far better RAG solution than present here. We'll move on here, as that's not the goal of this lab.
+
 ---
 
 ## Success Criteria
 
-A passing test suite indicates:
-- ✅ The agent correctly retrieves information from the knowledge base
-- ✅ Responses are relevant to the user's questions
-- ✅ Responses are coherent and well-structured
-- ✅ Responses are grounded in the actual CSV data
-- ✅ All ratings are `Good` or `Exceptional`
+A properly generated evaluation report:
+- ✅ The report points out where the agent is failing to answer questions within the expected instructions
+- ✅ Understanding of why each question or unit test fails or passes based on the agent's response
+- ✅ Understand why each result is scored as it was based on the evaluator and response from the agent
 
 ---
 
@@ -1469,6 +1566,12 @@ private static void Validate(EvaluationResult result)
 
 ---
 
+## Understanding the failures
+
+Again, you may not get all of the unit tests to pass here. That's ok. The goal is to see your test report and understand how your custom scoring metric changes based on the quality of the answer in comparison to your expected answer. You can try tweaking the expected answers or the agent's instructions, but again, these failures point to the general low-quality RAG pattern we used in this demonstration. Once you're happy you understand how the custom metric functions, move on to the next exercise!
+
+---
+
 ## Success Criteria
 
 A passing test suite indicates:
@@ -1477,7 +1580,7 @@ A passing test suite indicates:
 - ✅ LLM-as-Judge scoring produces meaningful results
 - ✅ Scores are correctly mapped to `EvaluationRating` values
 - ✅ All four evaluators work together in the test suite
-- ✅ All ratings are `Good` or `Exceptional`
+- ✅ Your ratings on the repot match what you'd expect from the LLM's answer. (An answer shouldn't be labelled as `Exceptional` if it's bad, and same with `Bad` if it's a really good answer.)
 
 ---
 
@@ -2487,6 +2590,9 @@ Your implementation is complete when:
 - ✅ After 1-3 iterations, all `AgentValidation` tests pass
 - ✅ Agent correctly follows all 6 game rules
 
+### Understanding failures
+This agent system can be the most difficult to get to pass. It might take multiple iterations, and you may never get it to pass. That's ok as this is a very challenging agent to build in a single instruction set. This really points to the fact this agent should likely be broken into multiple sub-agents instead. Breaking down responsibilities and finding smaller domains that each agent can control, and then building an orchestration agent to work with them. Another thing you can try is using more powerful thinking models, such as `gpt-5.2-codex` which will easily pass these tests once you go through an iteration or two of the prompt improvement flow. Don't fret if you can't get the provided model to pass, as it's not a strong thinking model, so it struggles sometimes to follow detailed multi-step instructions.
+
 ---
 
 ## Troubleshooting
@@ -2495,7 +2601,7 @@ Your implementation is complete when:
 |---------|----------------|------------|
 | Generator returns empty prompt | LLM failed to parse response | Check structured output format matches `PromptImprovementResponse` |
 | Same failures after improvement | Prompt not specific enough | Add more explicit step-by-step instructions in the improvement prompt template |
-| Tests still failing after many iterations | Fundamental prompt issue | Review the game rules and ensure all tool calls are explicitly required |
+| Tests still failing after many iterations | Low quality model | Provided OOB model might not be strong enough to fully complete exercise. |
 | Agent not using tools | Instructions don't specify when to call tools | Add "Call X immediately when Y" language |
 
 ---
