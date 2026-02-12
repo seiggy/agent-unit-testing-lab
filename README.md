@@ -925,8 +925,8 @@ private static async Task EvaluateQuestion(
     // Create a Scenario Run for each question.
     await using ScenarioRun scenario = await reportingConfiguration.CreateScenarioRunAsync($"Question_{question.QuestionId}", cancellationToken: cancellationToken);
 
-    // create a thread to track the Q&A interaction
-    var thread = agent.GetNewThread();
+    // create a session to track the Q&A interaction
+    var session = agent.CreateSessionAsync();
     var chatHistory = new List<ChatMessage>
     {
         new ChatMessage(ChatRole.User, question.Question)
@@ -934,7 +934,7 @@ private static async Task EvaluateQuestion(
 
     var response = await agent.RunAsync(
         chatHistory,
-        thread: thread,
+        session: session,
         cancellationToken: cancellationToken
     );
     chatHistory.AddRange(response.Messages);
@@ -1689,7 +1689,7 @@ The agent must follow these rules (defined in `QuizGameRulesEvaluator`):
 ```csharp
 public static AIAgent BuildQuizGameAgent(IChatClient chatClient, string instructions)
 {
-    return chatClient.CreateAIAgent(
+    return chatClient.AsAIAgent(
         instructions: instructions,
         name: "QuizMaster",
         tools: GetToolDefinitions()
@@ -2304,12 +2304,12 @@ private async Task<TestEvaluationResult> RunScenarioForImprovement(
 
 ```csharp
     // Run the agent with the user message
-    var thread = agent.GetNewThread();
+    var session = await agent.CreateSessionAsync();
     var chatHistory = new List<ChatMessage> { new ChatMessage(ChatRole.User, userMessage) };
 
     var response = await agent.RunAsync(
         chatHistory,
-        thread: thread,
+        session: session,
         cancellationToken: TestContext.CancellationTokenSource.Token
     );
 
@@ -2452,12 +2452,12 @@ private async Task<TestEvaluationResult> RunScenarioForImprovement(
     var toolContext = new TaskAdherenceEvaluatorContext(toolDefinitions: QuizGameAgent.GetToolDefinitions());
     var rulesContext = new QuizGameRulesEvaluator.Context(startingInstructions);
 
-    var thread = agent.GetNewThread();
+    var session = await agent.CreateSessionAsync();
     var chatHistory = new List<ChatMessage> { new ChatMessage(ChatRole.User, userMessage) };
 
     var response = await agent.RunAsync(
         chatHistory,
-        thread: thread,
+        session: session,
         cancellationToken: TestContext.CancellationTokenSource.Token
     );
 
