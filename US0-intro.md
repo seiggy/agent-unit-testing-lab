@@ -109,6 +109,20 @@ dotnet run --project src/AgentEvalsWorkshop.AppHost
 
 When the Aspire Dashboard opens, you'll need to provide your Azure subscription credentials to connect to Azure AI Foundry.
 
+### Use the following for your Skillable Environment:
+
+| Setting | Value |
+| ------- | ----- |
+| "Azure:TenantId" | `@lab.CloudSubscription.TenantId` |
+| "Azure:SubscriptionId" | `@lab.CloudSubscription.Id` |
+| "Azure:ResourceGroup" | `@lab.CloudResourceGroup(ResourceGroup1).Name` |
+| "Azure:Location" | `@lab.CloudResourceGroup(ResourceGroup1).Location` |
+| "Parameters:gpt-deployment-name" | `chat` |
+| "Parameters:az-foundry-name" | `@lab.CloudResourceTemplate(Lab182-Template).Outputs[name]`
+| "Parameters:resource-group" | `@lab.CloudResourceGroup(ResourceGroup1).Name` |
+
+If you're not using Skillable labs, follow the instructions below to find your Subscription details:
+
 ### Locate Your Azure Subscription ID
 
 1. [ ] Navigate to the [Azure Portal](https://portal.azure.com)
