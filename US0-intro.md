@@ -83,7 +83,7 @@ Choose one of the following methods to clone the workshop repository.
 
 ## Start the Aspire AppHost
 
-The Aspire AppHost orchestrates the application and its dependencies, including the Azure AI Foundry connection.
+The Aspire AppHost orchestrates the application and its dependencies, including the Azure AI Foundry connection. Continue this section with the previously selected editor (VSC or Visual Studio).
 
 ### Using Visual Studio 2026
 
